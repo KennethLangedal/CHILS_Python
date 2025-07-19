@@ -25,6 +25,7 @@ class CustomBuild(build_py):
                         cc = os.path.join(gcc_bin_dir, compilers[-1])
                 except (subprocess.CalledProcessError, FileNotFoundError):
                     # Fallback to system gcc if brew command fails
+                    raise FileNotFoundError("No gcc compiler found in brew directory (e.g., gcc-15)")
                     pass
             make_command = ["make", f"CC={cc}", "-C", submodule_dir, lib_name]
 
