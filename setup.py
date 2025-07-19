@@ -16,8 +16,11 @@ class CustomBuild(build_py):
             lib_name = "libCHILS.so"
             cc = "gcc"
             if platform.system() == "Darwin":
-                cc = "$(brew --prefix llvm)/bin/clang"
-            make_command = ["make", f"CC={cc}", "-C", submodule_dir, lib_name]
+                cc = "/opt/homebrew/opt/llvm/bin/clang"
+                cflags = "-Xpreprocessor -I/opt/homebrew/opt/libomp/include"
+                make_command = ["make", f"CC={cc}", f"CFLAGS={cflags}", "-C", submodule_dir, lib_name]
+            else:
+                make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
 
         # Build the library inside the submodule directory
         subprocess.check_call(make_command)
