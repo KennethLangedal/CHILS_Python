@@ -1,0 +1,5 @@
+include CHILS/Makefile
+include LICENSE
+recursive-include CHILS/src/ *.c
+recursive-include CHILS/include/ *.h
+recursive-include CHILS/bin/ .gitignore
