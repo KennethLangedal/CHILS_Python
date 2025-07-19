@@ -18,7 +18,8 @@ class CustomBuild(build_py):
             if platform.system() == "Darwin":
                 cc = "clang"
                 cflags = "-Xpreprocessor -I/opt/homebrew/opt/libomp/include"
-                make_command = ["make", f"CC={cc}", f"CFLAGS={cflags}", "-C", submodule_dir, lib_name]
+                ldflags = "-L/opt/homebrew/opt/libomp/lib -lomp"
+                make_command = ["make", f"CC={cc}", f"CFLAGS={cflags}", f"LDFLAGS={ldflags}", "-C", submodule_dir, lib_name]
             else:
                 make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
 
