@@ -20,7 +20,7 @@ class CustomBuild(build_py):
                     brew_prefix = subprocess.check_output(["brew", "--prefix", "gcc"], text=True).strip()
                     gcc_bin_dir = os.path.join(brew_prefix, "bin")
                     # Filter for actual compilers, e.g., gcc-15, not gcc-ranlib-15
-                    compilers = sorted([f for f in os.listdir(gcc_bin_dir) if re.match(r'^gcc-\d+, f)])
+                    compilers = sorted([f for f in os.listdir(gcc_bin_dir) if re.match(r'^gcc-\d+$', f)])
                     if compilers:
                         cc = os.path.join(gcc_bin_dir, compilers[-1])
                 except (subprocess.CalledProcessError, FileNotFoundError):
