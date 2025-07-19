@@ -41,7 +41,8 @@ jobs:
           CIBW_SKIP: "*-musllinux_*"
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
-          CIBW_BEFORE_BUILD_MACOS: "brew install gcc && pip install delocate"
+          CIBW_BEFORE_BUILD_MACOS: "brew install libomp && pip install delocate"
+          CIBW_ENVIRONMENT_MACOS: 'CPPFLAGS="-Xpreprocessor -I$(brew --prefix libomp)/include"'
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel -w {dest_dir} {wheel}"
         with:
           output-dir: wheels

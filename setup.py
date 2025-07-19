@@ -16,17 +16,7 @@ class CustomBuild(build_py):
             lib_name = "libCHILS.so"
             cc = "gcc"
             if platform.system() == "Darwin":
-                try:
-                    brew_prefix = subprocess.check_output(["brew", "--prefix", "gcc"], text=True).strip()
-                    gcc_bin_dir = os.path.join(brew_prefix, "bin")
-                    # Filter for actual compilers, e.g., gcc-15, not gcc-ranlib-15
-                    compilers = sorted([f for f in os.listdir(gcc_bin_dir) if re.match(r'^gcc-\d+$', f)])
-                    if compilers:
-                        cc = os.path.join(gcc_bin_dir, compilers[-1])
-                except (subprocess.CalledProcessError, FileNotFoundError):
-                    # Fallback to system gcc if brew command fails
-                    raise FileNotFoundError("No gcc compiler found in brew directory (e.g., gcc-15)")
-                    pass
+                cc = "$(brew --prefix llvm)/bin/clang"
             make_command = ["make", f"CC={cc}", "-C", submodule_dir, lib_name]
 
         # Build the library inside the submodule directory
