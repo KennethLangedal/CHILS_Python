@@ -42,7 +42,7 @@ jobs:
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
           CIBW_BEFORE_BUILD_MACOS: "brew install gcc && pip install delocate"
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --wheel {wheel} --dest-dir {dest_dir}"
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel -w {dest_dir} {wheel}"
         with:
           output-dir: wheels
 
