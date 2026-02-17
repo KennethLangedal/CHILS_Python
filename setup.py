@@ -12,9 +12,6 @@ class CustomBuild(build_py):
         if platform.system() == "Windows":
             lib_name = "libCHILS.dll"
             make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
-        elif platform.system() == "Darwin": # macOS
-            lib_name = "libCHILS.dylib"
-            make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
         else: # Linux
             lib_name = "libCHILS.so"
             cc = "gcc"
