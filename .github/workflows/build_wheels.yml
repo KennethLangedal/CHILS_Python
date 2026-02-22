@@ -36,6 +36,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.19.2
         env:
+          CIBW_TEST_COMMAND: python {project}/test.py
           CIBW_BUILD: cp310-*
           CIBW_ARCHS: ${{(matrix.os == 'ubuntu-latest' && 'auto aarch64' || 'auto') }}
           CIBW_ARCHS_MACOS: "x86_64 arm64"
@@ -44,28 +45,32 @@ jobs:
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
           CIBW_BEFORE_BUILD_MACOS: |
             set -eux
-            
-            brew install llvm cmake
-            
-            git clone --depth 1 https://github.com/llvm/llvm-project.git
-            cd llvm-project
-            
-            export MACOSX_DEPLOYMENT_TARGET=11.0
-            
-            cmake -S runtimes -B build \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DLLVM_ENABLE_RUNTIMES=openmp \
-              -DLIBOMP_ENABLE_SHARED=ON \
-              -DLIBOMP_ENABLE_STATIC=OFF \
-              -DLIBOMP_INSTALL_ALIASES=OFF \
-              -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-              -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
-              -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
-              -DCMAKE_INSTALL_NAME_DIR="@rpath"
-              
-            cmake --build build --parallel
 
-            cmake --install build
+            if [ ! -d "llvm-project/build/install" ]; then
+            
+              brew install llvm cmake
+            
+              git clone --depth 1 https://github.com/llvm/llvm-project.git
+              cd llvm-project
+            
+              export MACOSX_DEPLOYMENT_TARGET=11.0
+            
+              cmake -S runtimes -B build \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DLLVM_ENABLE_RUNTIMES=openmp \
+                -DLIBOMP_ENABLE_SHARED=ON \
+                -DLIBOMP_ENABLE_STATIC=OFF \
+                -DLIBOMP_INSTALL_ALIASES=OFF \
+                -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+                -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
+                -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+                -DCMAKE_INSTALL_NAME_DIR="@rpath"
+              
+              cmake --build build --parallel
+
+              cmake --install build
+
+            fi
 
             ls -l $PWD/build/install/lib/
             ls -l $PWD/build/install/include/
