@@ -13,26 +13,25 @@ class CustomBuild(build_py):
             lib_name = "libCHILS.dll"
             make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
         elif platform.system() == "Darwin": # macOS
+            os.environ.setdefault("MACOSX_DEPLOYMENT_TARGET", "11.0")
+
             lib_name = "libCHILS.so"
 
-            cc = os.environ.get("CC", "/opt/homebrew/opt/llvm/bin/clang")
-            
-            # Resolve libomp paths via Homebrew
-            try:
-                libomp_prefix = subprocess.check_output(
-                    ["brew", "--prefix", "libomp"], text=True
-                ).strip()
-            except Exception as e:
-                raise RuntimeError("libomp not found. Please brew install libomp") from e
+            cc = os.environ.get("CC", "clang")
+
+            libomp_root = os.environ.get("LIBOMP_ROOT")
+            if not libomp_root:
+                raise RuntimeError(
+                    "LIBOMP_ROOT not set. libomp must be built in CI."
+                )
 
             cflags = [
                 "-Xpreprocessor",
-                f"-I{libomp_prefix}/include",
+                f"-I{libomp_root}",
             ]
 
             ldflags = [
-                f"-L{libomp_prefix}/lib",
-                "-lomp",
+                f"{libomp_root}/libomp.dylib",
             ]
 
             make_command = [

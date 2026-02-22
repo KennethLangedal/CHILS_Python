@@ -40,7 +40,19 @@ jobs:
           CIBW_ARCHS: ${{(matrix.os == 'ubuntu-latest' && 'auto aarch64' || 'auto') }}
           CIBW_SKIP: "*-musllinux_*"
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
-          CIBW_BEFORE_BUILD_MACOS: "brew install llvm libomp"
+          CIBW_BEFORE_BUILD_MACOS: >
+            brew install llvm cmake &&
+            git clone --depth 1 https://github.com/llvm/llvm-project.git &&
+            cd llvm-project/openmp &&
+            export MACOSX_DEPLOYMENT_TARGET=11.0 &&
+            cmake -S . -B build
+              -DCMAKE_BUILD_TYPE=Release
+              -DLIBOMP_ENABLE_SHARED=ON
+              -DLIBOMP_ENABLE_STATIC=OFF
+              -DLIBOMP_INSTALL_ALIASES=OFF
+              -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" &&
+            cmake --build build --parallel &&
+            echo "LIBOMP_ROOT=$PWD/build/runtime/src" >> $GITHUB_ENV
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
         with:
           output-dir: wheels
