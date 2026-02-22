@@ -59,10 +59,8 @@ jobs:
               -DLIBOMP_INSTALL_ALIASES=OFF
               
             cmake --build build --parallel
-            
-            echo "$PWD/build/runtimes/openmp/runtime/src" > /tmp/libomp_root.txt
           CIBW_ENVIRONMENT_MACOS: >
-            LIBOMP_ROOT=$(cat /tmp/libomp_root.txt)
+            LIBOMP_ROOT=$GITHUB_WORKSPACE/llvm-project/build/runtimes/openmp/runtime/src
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
         with:
           output-dir: wheels
