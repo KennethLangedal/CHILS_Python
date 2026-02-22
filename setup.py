@@ -15,7 +15,7 @@ class CustomBuild(build_py):
         elif platform.system() == "Darwin": # macOS
             lib_name = "libCHILS.so"
 
-            cc = os.environ.get("CC", "clang")
+            cc = os.environ.get("CC", "/opt/homebrew/opt/llvm/bin/clang")
             
             # Resolve libomp paths via Homebrew
             try:
@@ -26,7 +26,7 @@ class CustomBuild(build_py):
                 raise RuntimeError("libomp not found. Please brew install libomp") from e
 
             cflags = [
-                "-Xpreprocessor", "-fopenmp",
+                "-Xpreprocessor",
                 f"-I{libomp_prefix}/include",
             ]
 
