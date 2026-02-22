@@ -12,10 +12,10 @@ class CustomBuild(build_py):
         if platform.system() == "Windows":
             lib_name = "libCHILS.dll"
             make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
-        else: # Linux
+        else: # Linux or macOS
             lib_name = "libCHILS.so"
             cc = "gcc"
-            make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
+            make_command = ["make", "CC=" + cc, "-C", submodule_dir, lib_name]
 
         # Build the library inside the submodule directory
         subprocess.check_call(make_command)
