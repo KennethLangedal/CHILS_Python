@@ -30,7 +30,7 @@ class CustomBuild(build_py):
                 )
 
             include_dir = os.path.join(libomp_root, "runtime", "src")
-            dylib_path = os.path.join(libomp_root, "src")
+            dylib_path = os.path.join(libomp_root, "src", ".libs")
 
             cflags = [
                 "-Xpreprocessor",
