@@ -68,13 +68,13 @@ jobs:
                 -DCMAKE_INSTALL_NAME_DIR="@rpath"
               
               cmake --build build --parallel
-
               cmake --install build
+              cd ..
 
             fi
 
-            ls -l $PWD/build/install/lib/
-            ls -l $PWD/build/install/include/
+            ls -l $PWD/llvm-project/build/install/lib/
+            ls -l $PWD/llvm-project/build/install/include/
           CIBW_ENVIRONMENT_MACOS: >
             LIBOMP_ROOT=$PWD/llvm-project/build/install
             MACOSX_DEPLOYMENT_TARGET=11.0
