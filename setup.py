@@ -40,6 +40,7 @@ class CustomBuild(build_py):
             ldflags = [
                 f"-L{dylib_path}",
                 "-lomp",
+                f"-Wl,-rpath,{dylib_path}",
                 "-Wl,-rpath,@loader_path/.dylibs",
             ]
 
