@@ -12,7 +12,26 @@ class CustomBuild(build_py):
         if platform.system() == "Windows":
             lib_name = "libCHILS.dll"
             make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
-        else: # Linux or macOS
+        elif platform.system() == "Darwin": # macOS
+            lib_name = "libCHILS.so"
+            # Find homebrew gcc, as specified by the user
+            try:
+                proc = subprocess.run(
+                    "find $(brew --prefix gcc)/bin -name 'gcc-*' | head -n 1",
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+                cc = proc.stdout.strip()
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                # Fallback to default gcc if brew command fails
+                print("Homebrew gcc not found, falling back to system gcc. This might fail.")
+                print(e)
+                cc = "gcc"
+            
+            make_command = ["make", "CC=" + cc, "-C", submodule_dir, lib_name]
+        else: # Linux
             lib_name = "libCHILS.so"
             cc = "gcc"
             make_command = ["make", "CC=" + cc, "-C", submodule_dir, lib_name]
@@ -33,7 +52,7 @@ class CustomBuild(build_py):
 
 setup(
     name='chils',
-    version='1.0.0',
+    version='1.0.1',
     author='Kenneth Langedal',
     packages=find_packages(where="python"),
     package_dir={"" : "python"},
