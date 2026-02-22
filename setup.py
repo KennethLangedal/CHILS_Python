@@ -38,7 +38,9 @@ class CustomBuild(build_py):
             ]
 
             ldflags = [
-                f"{dylib_path}/libomp.dylib",
+                f"-L{lib_path}",
+                "-lomp",
+                "-Wl,-rpath,@loader_path/.dylibs",
             ]
 
             make_command = [
