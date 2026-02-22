@@ -14,23 +14,35 @@ class CustomBuild(build_py):
             make_command = ["make", "CC=gcc", "-C", submodule_dir, lib_name]
         elif platform.system() == "Darwin": # macOS
             lib_name = "libCHILS.so"
-            # Find homebrew gcc, as specified by the user
-            try:
-                proc = subprocess.run(
-                    "find $(brew --prefix gcc)/bin -name 'gcc-*' | head -n 1",
-                    shell=True,
-                    capture_output=True,
-                    text=True,
-                    check=True
-                )
-                cc = proc.stdout.strip()
-            except (subprocess.CalledProcessError, FileNotFoundError) as e:
-                # Fallback to default gcc if brew command fails
-                print("Homebrew gcc not found, falling back to system gcc. This might fail.")
-                print(e)
-                cc = "gcc"
+
+            cc = os.environ.get("CC", "clang")
             
-            make_command = ["make", "CC=" + cc, 'LDFLAGS=-static-libgomp', "-C", submodule_dir, lib_name]
+            # Resolve libomp paths via Homebrew
+            try:
+                libomp_prefix = subprocess.check_output(
+                    ["brew", "--prefix", "libomp"], text=True
+                ).strip()
+            except Exception as e:
+                raise RuntimeError("libomp not found. Please brew install libomp") from e
+
+            cflags = [
+                "-Xpreprocessor", "-fopenmp",
+                f"-I{libomp_prefix}/include",
+            ]
+
+            ldflags = [
+                f"-L{libomp_prefix}/lib",
+                "-lomp",
+            ]
+
+            make_command = [
+                "make",
+                f"CC={cc}",
+                f"CFLAGS={' '.join(cflags)}",
+                f"LDFLAGS={' '.join(ldflags)}",
+                "-C", submodule_dir,
+                lib_name,
+            ]
         else: # Linux
             lib_name = "libCHILS.so"
             cc = "gcc"
