@@ -60,7 +60,9 @@ jobs:
               
             cmake --build build --parallel
             
-            echo "LIBOMP_ROOT=$PWD/build/runtimes/openmp/runtime/src" >> $GITHUB_ENV
+            echo "$PWD/build/runtimes/openmp/runtime/src" > /tmp/libomp_root.txt
+          CIBW_ENVIRONMENT_MACOS: >
+            LIBOMP_ROOT=$(cat /tmp/libomp_root.txt)
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
         with:
           output-dir: wheels
