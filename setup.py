@@ -29,8 +29,8 @@ class CustomBuild(build_py):
                     "LIBOMP_ROOT not set. libomp must be built in CI."
                 )
 
-            include_dir = os.path.join(libomp_root, "runtime", "src")
-            dylib_path = os.path.join(libomp_root, "src", ".libs")
+            include_dir = os.path.join(libomp_root, "include")
+            dylib_path  = os.path.join(libomp_root, "lib")
 
             cflags = [
                 "-Xpreprocessor",

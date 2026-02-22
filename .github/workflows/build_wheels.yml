@@ -53,17 +53,21 @@ jobs:
             cmake -S runtimes -B build \
               -DCMAKE_BUILD_TYPE=Release \
               -DLLVM_ENABLE_RUNTIMES=openmp \
-              -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
               -DLIBOMP_ENABLE_SHARED=ON \
               -DLIBOMP_ENABLE_STATIC=OFF \
-              -DLIBOMP_INSTALL_ALIASES=OFF
+              -DLIBOMP_INSTALL_ALIASES=OFF \
+              -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+              -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
+              -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
               
             cmake --build build --parallel
+
+            cmake --install build
 
             ls -l llvm-project/build/runtimes/openmp/src/.libs/libomp.dylib
             ls -l llvm-project/build/runtimes/openmp/runtime/src/omp.h
           CIBW_ENVIRONMENT_MACOS: >
-            LIBOMP_ROOT=$GITHUB_WORKSPACE/llvm-project/build/runtimes/openmp/
+            LIBOMP_ROOT=$PWD/build/install
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
         with:
           output-dir: wheels
