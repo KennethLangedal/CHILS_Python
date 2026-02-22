@@ -64,8 +64,8 @@ jobs:
 
             cmake --install build
 
-            ls -l llvm-project/build/runtimes/openmp/src/.libs/libomp.dylib
-            ls -l llvm-project/build/runtimes/openmp/runtime/src/omp.h
+            ls -l $PWD/build/install/bin/
+            ls -l $PWD/build/install/include/
           CIBW_ENVIRONMENT_MACOS: >
             LIBOMP_ROOT=$PWD/build/install
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
