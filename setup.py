@@ -30,7 +30,7 @@ class CustomBuild(build_py):
                 print(e)
                 cc = "gcc"
             
-            make_command = ["make", "CC=" + cc, "-C", submodule_dir, lib_name]
+            make_command = ["make", "CC=" + cc, 'LDFLAGS="-static-libgomp"', "-C", submodule_dir, lib_name]
         else: # Linux
             lib_name = "libCHILS.so"
             cc = "gcc"
