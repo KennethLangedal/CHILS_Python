@@ -67,7 +67,7 @@ jobs:
             ls -l $PWD/build/install/lib/
             ls -l $PWD/build/install/include/
           CIBW_ENVIRONMENT_MACOS: >
-            LIBOMP_ROOT=$PWD/build/install
+            LIBOMP_ROOT=$PWD/llvm-project/build/install
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: 'delvewheel repair -w {dest_dir} {wheel}'
         with:
           output-dir: wheels
