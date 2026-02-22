@@ -64,7 +64,7 @@ jobs:
 
             cmake --install build
 
-            ls -l $PWD/build/install/bin/
+            ls -l $PWD/build/install/lib/
             ls -l $PWD/build/install/include/
           CIBW_ENVIRONMENT_MACOS: >
             LIBOMP_ROOT=$PWD/build/install
