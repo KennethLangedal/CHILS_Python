@@ -17,7 +17,11 @@ class CustomBuild(build_py):
 
             lib_name = "libCHILS.so"
 
-            cc = os.environ.get("CC", "clang")
+            llvm_prefix = subprocess.check_output(
+                ["brew", "--prefix", "llvm"], text=True
+            ).strip()
+
+            cc = os.path.join(llvm_prefix, "bin", "clang")
 
             libomp_root = os.environ.get("LIBOMP_ROOT")
             if not libomp_root:
