@@ -71,11 +71,23 @@ class CHILS:
             n_solutions (int): The number of solutions to use for CHILS.
             seed (int): The seed for the random number generator.
         """
-        try:
+
+        def worker():
             _lib.chils_run_full(self.solver, time_limit, n_solutions, seed)
+
+        c_thread = threading.Thread(target=worker, daemon=True)
+        c_thread.start()
+
+        try:
+            while c_thread.is_alive():
+                c_thread.join(timeout=0.1) 
+            
         except KeyboardInterrupt:
-            print("\nInterrupt detected, shutting down gracefully...")
-            _lib.chils_request_stop()
+            print("\n[Python] Interrupt detected, signaling C solver...")
+            _lib.chils_request_stop() 
+        
+            c_thread.join(timeout=5.0) 
+            print("[Python] Cleanup complete.")
             raise
 
     def run_local_search_only(self, time_limit, seed):
@@ -86,11 +98,23 @@ class CHILS:
             time_limit (float): The time limit in seconds.
             seed (int): The seed for the random number generator.
         """
-        try:
+
+        def worker():
             _lib.chils_run_local_search_only(self.solver, time_limit, seed)
+
+        c_thread = threading.Thread(target=worker, daemon=True)
+        c_thread.start()
+
+        try:
+            while c_thread.is_alive():
+                c_thread.join(timeout=0.1) 
+            
         except KeyboardInterrupt:
-            print("\nInterrupt detected, shutting down gracefully...")
-            _lib.chils_request_stop()
+            print("\n[Python] Interrupt detected, signaling C solver...")
+            _lib.chils_request_stop() 
+        
+            c_thread.join(timeout=5.0) 
+            print("[Python] Cleanup complete.")
             raise
 
     def get_solution_size(self):
