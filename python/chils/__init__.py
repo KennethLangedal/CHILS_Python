@@ -1,6 +1,7 @@
 import ctypes
 import os
 import platform
+import threading
 
 _lib_name = "libCHILS.so"
 if platform.system() == "Windows":
